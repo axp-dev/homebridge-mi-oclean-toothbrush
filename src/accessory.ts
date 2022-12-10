@@ -8,7 +8,7 @@ import {
     Logging,
     Service
 } from 'homebridge'
-import { Scanner } from './scanner'
+import { Scanner, ScannerResultProps } from './scanner'
 import { HAP } from 'homebridge/lib/api'
 import { AccessoryInformation, Battery } from 'hap-nodejs/dist/lib/definitions/ServiceDefinitions'
 
@@ -26,13 +26,14 @@ export class MiOcleanToothbrush implements AccessoryPlugin {
         private readonly config: AccessoryConfig,
         private readonly api: API
     ) {
-        this.scanner = new Scanner(this.config.uuid, log)
         this.informationService = this.getInformationService()
         this.batteryService = this.getBatteryService()
 
-        setInterval(this.update.bind(this), this.config.updateInterval)
-        this.update()
+        this.scanner = new Scanner(this.config.uuid, log)
+        this.scanner.on('updateValues', this.update.bind(this))
 
+        setInterval(this.scanner.start, this.config.updateInterval)
+        this.scanner.start()
         log.info(`${this.config.name} - Sensor finished initializing!`)
     }
 
@@ -98,21 +99,9 @@ export class MiOcleanToothbrush implements AccessoryPlugin {
 
     identify(): void {}
 
-    async update(): Promise<void> {
-        const props = await this.scanner.getProps()
-
+    update(props: ScannerResultProps) {
         this.latestBatteryLevel = props.battery
 
         this.log.debug(`Oclean ${props.deviceNumber} updated: Battery: ${props.battery}`)
-    }
-
-    onCharacteristicGetValue(field: string, callback: Function) {
-        const value = this[field]
-
-        if (value == null) {
-            callback(new Error(`Undefined characteristic value for ${field}`))
-        } else {
-            callback(null, value)
-        }
     }
 }

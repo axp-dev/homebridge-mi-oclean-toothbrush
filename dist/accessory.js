@@ -8,11 +8,12 @@ class MiOcleanToothbrush {
         this.config = config;
         this.api = api;
         this.latestBatteryLevel = 0;
-        this.scanner = new scanner_1.Scanner(this.config.uuid, log);
         this.informationService = this.getInformationService();
         this.batteryService = this.getBatteryService();
-        setInterval(this.update.bind(this), this.config.updateInterval);
-        this.update();
+        this.scanner = new scanner_1.Scanner(this.config.uuid, log);
+        this.scanner.on('updateValues', this.update.bind(this));
+        setInterval(this.scanner.start, this.config.updateInterval);
+        this.scanner.start();
         log.info(`${this.config.name} - Sensor finished initializing!`);
     }
     get hap() {
@@ -61,19 +62,9 @@ class MiOcleanToothbrush {
         return (_a = this.latestBatteryLevel) !== null && _a !== void 0 ? _a : 0;
     }
     identify() { }
-    async update() {
-        const props = await this.scanner.getProps();
+    update(props) {
         this.latestBatteryLevel = props.battery;
         this.log.debug(`Oclean ${props.deviceNumber} updated: Battery: ${props.battery}`);
-    }
-    onCharacteristicGetValue(field, callback) {
-        const value = this[field];
-        if (value == null) {
-            callback(new Error(`Undefined characteristic value for ${field}`));
-        }
-        else {
-            callback(null, value);
-        }
     }
 }
 exports.MiOcleanToothbrush = MiOcleanToothbrush;

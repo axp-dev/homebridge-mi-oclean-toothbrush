@@ -1,5 +1,6 @@
 import { Logging } from 'homebridge'
 import noble from '@abandonware/noble'
+import { EventEmitter } from 'events'
 
 export type ScannerProp = {
     name: string
@@ -13,15 +14,16 @@ export type ScannerResultProps = {
     deviceNumber: string
 }
 
-export class Scanner {
-    public uuid: string
-    public log: Logging
+export class Scanner extends EventEmitter {
     private props: ScannerProp[] = []
 
-    constructor(uuid: string, log: Logging) {
-        this.uuid = uuid
-        this.log = log
+    constructor(private readonly uuid: string, private readonly log: Logging) {
+        super()
+        this.registerEvents()
+        this.registerProps()
+    }
 
+    registerProps() {
         this.props.push({
             name: 'battery',
             serviceUUID: '180f',
@@ -34,53 +36,79 @@ export class Scanner {
             characteristicUUID: '2a24',
             executor: (buffer) => buffer.toString()
         })
-
-        noble.on('stateChange', (state) => {
-            if (state === 'poweredOn') {
-                noble.startScanning([], true)
-            } else {
-                noble.stopScanning()
-            }
-        })
     }
 
-    addProp(prop: ScannerProp) {
-        this.props.push(prop)
+    registerEvents() {
+        noble.on('discover', this.onDiscover.bind(this))
+        noble.on('scanStart', this.onScanStart.bind(this))
+        noble.on('scanStop', this.onScanStop.bind(this))
+        noble.on('warning', this.onWarning.bind(this))
+        noble.on('stateChange', this.onStateChange.bind(this))
     }
 
-    getProps(): Promise<ScannerResultProps> {
-        noble.startScanning([], false)
+    start() {
+        try {
+            this.log.debug('Scanning...')
+            noble.startScanning([], false)
+        } catch (error) {
+            this.emit('error', error)
+        }
+    }
 
-        return new Promise((resolve) => {
-            noble.on('discover', async (peripheral) => {
-                if (peripheral.uuid !== this.uuid) {
-                    return
-                }
+    async onDiscover(peripheral) {
+        if (peripheral.uuid !== this.uuid) {
+            return
+        }
 
-                this.log.debug(`Device found with UUID "${this.uuid}"`)
+        this.log.debug(`Device found with UUID "${this.uuid}"`)
 
-                await noble.stopScanningAsync()
-                await peripheral.connectAsync()
+        await noble.stopScanningAsync()
+        await peripheral.connectAsync()
 
-                const { characteristics } = await peripheral.discoverSomeServicesAndCharacteristicsAsync(
-                    this.props.map((prop) => prop.serviceUUID),
-                    this.props.map((prop) => prop.characteristicUUID)
-                )
+        const { characteristics } = await peripheral.discoverSomeServicesAndCharacteristicsAsync(
+            this.props.map((prop) => prop.serviceUUID),
+            this.props.map((prop) => prop.characteristicUUID)
+        )
 
-                let result = {}
+        let result = {}
 
-                for (let index = 0; index < characteristics.length; index++) {
-                    const characteristic = characteristics[index]
-                    const name = this.props[index].name
-                    const executor = this.props[index].executor
+        for (let index = 0; index < characteristics.length; index++) {
+            const characteristic = characteristics[index]
+            const name = this.props[index].name
+            const executor = this.props[index].executor
 
-                    result[name] = await executor(await characteristic.readAsync())
-                }
+            result[name] = await executor(await characteristic.readAsync())
+        }
 
-                await peripheral.disconnectAsync()
+        await peripheral.disconnectAsync()
+        this.emit('updateValues', result)
+    }
 
-                resolve(result as ScannerResultProps)
-            })
-        })
+    onScanStart() {
+        this.log.debug('Started scanning.')
+    }
+
+    onScanStop() {
+        this.log.debug('Stopped scanning.')
+    }
+
+    onWarning(message) {
+        this.log.warn('Warning: ', message)
+    }
+
+    onStateChange(state) {
+        if (state === 'poweredOn') {
+            noble.startScanning([], false)
+        } else {
+            noble.stopScanning()
+        }
+    }
+
+    onNotify(state) {
+        this.log.debug('Characteristics notification received.')
+    }
+
+    onDisconnect() {
+        this.log.debug(`Disconnected.`)
     }
 }
