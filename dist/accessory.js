@@ -26,7 +26,8 @@ class MiOcleanToothbrush {
         return [this.informationService, this.batteryService, this.getDiagnosticsService()];
     }
     getDiagnosticsService() {
-        const diagnostics = new this.hap.Service.Tunnel('Tunnel');
+        const diagnostics = new this.hap.Service.Valve();
+        diagnostics.setCharacteristic(this.hap.Characteristic.ValveType, 'tf');
         return diagnostics;
     }
     getInformationService() {
