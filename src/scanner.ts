@@ -80,8 +80,9 @@ export class Scanner extends EventEmitter {
             result[name] = await executor(await characteristic.readAsync())
         }
 
+        this.log.warn('result', result)
+
         await peripheral.disconnectAsync()
-        this.emit('updateValues', result)
     }
 
     onScanStart() {

@@ -60,8 +60,8 @@ class Scanner extends events_1.EventEmitter {
             const executor = this.props[index].executor;
             result[name] = await executor(await characteristic.readAsync());
         }
+        this.log.warn('result', result);
         await peripheral.disconnectAsync();
-        this.emit('updateValues', result);
     }
     onScanStart() {
         this.log.debug('Started scanning.');
