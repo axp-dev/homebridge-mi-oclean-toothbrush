@@ -1,0 +1,22 @@
+{
+    "parser": "@typescript-eslint/parser",
+    "extends": [
+        "plugin:@typescript-eslint/recommended",
+        "prettier/@typescript-eslint",
+        "plugin:prettier/recommended"
+    ],
+    "rules": {
+        "indent": ["error", 4],
+        "semi": ["error", "never"],
+        "eqeqeq": ["error", "always"],
+        "quotes": ["error", "single"],
+        "object-curly-spacing": ["error", "always"],
+        "no-multi-spaces": ["error", { "ignoreEOLComments": true }],
+        "comma-dangle": ["error"],
+        "no-empty": ["error", { "allowEmptyCatch": true }],
+        "arrow-spacing": ["error"],
+        "arrow-parens": ["error"],
+        "no-unused-vars": "off",
+        "@typescript-eslint/no-unused-vars": "off"
+    }
+}

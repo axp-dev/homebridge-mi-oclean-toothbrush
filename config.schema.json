@@ -1,0 +1,26 @@
+{
+  "pluginAlias": "MiOcleanToothbrush",
+  "pluginType": "accessory",
+  "singular": false,
+  "schema": {
+    "type": "object",
+    "properties": {
+      "name": {
+        "type": "string",
+        "title": "Toothbrush Name",
+        "description": "This is the name the toothbrush will use in HomeKit",
+        "required": true
+      },
+      "address": {
+        "type": "string",
+        "title": "UUID Address",
+        "placeholder": "123e4567-e89b-12d3-a456-426614174000",
+        "required": true
+      }
+    }
+  },
+  "form": [
+    "name",
+    "uuid"
+  ]
+}
