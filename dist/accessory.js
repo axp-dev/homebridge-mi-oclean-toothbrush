@@ -12,8 +12,8 @@ class MiOcleanToothbrush {
         this.batteryService = this.getBatteryService();
         this.scanner = new scanner_1.Scanner(this.config.uuid, log);
         this.scanner.on('updateValues', this.update.bind(this));
-        setInterval(this.scanner.start, this.config.updateInterval);
-        this.scanner.start();
+        //setInterval(this.scanner.start, this.config.updateInterval)
+        //this.scanner.start()
         log.info(`${this.config.name} - Sensor finished initializing!`);
     }
     get hap() {

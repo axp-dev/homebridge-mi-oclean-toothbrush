@@ -32,8 +32,8 @@ export class MiOcleanToothbrush implements AccessoryPlugin {
         this.scanner = new Scanner(this.config.uuid, log)
         this.scanner.on('updateValues', this.update.bind(this))
 
-        setInterval(this.scanner.start, this.config.updateInterval)
-        this.scanner.start()
+        //setInterval(this.scanner.start, this.config.updateInterval)
+        //this.scanner.start()
         log.info(`${this.config.name} - Sensor finished initializing!`)
     }
 
