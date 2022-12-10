@@ -26,7 +26,7 @@ class MiOcleanToothbrush {
         return [this.informationService, this.batteryService, this.getDiagnosticsService()];
     }
     getDiagnosticsService() {
-        const diagnostics = new this.hap.Service.Diagnostics();
+        const diagnostics = new this.hap.Service.Tunnel('Tunnel');
         return diagnostics;
     }
     getInformationService() {

@@ -13,7 +13,8 @@ import { HAP } from 'homebridge/lib/api'
 import {
     AccessoryInformation,
     Battery,
-    Diagnostics
+    Diagnostics,
+    Tunnel
 } from 'hap-nodejs/dist/lib/definitions/ServiceDefinitions'
 
 export class MiOcleanToothbrush implements AccessoryPlugin {
@@ -54,7 +55,7 @@ export class MiOcleanToothbrush implements AccessoryPlugin {
     }
 
     getDiagnosticsService() {
-        const diagnostics = new this.hap.Service.Diagnostics()
+        const diagnostics = new this.hap.Service.Tunnel('Tunnel')
 
         return diagnostics
     }
