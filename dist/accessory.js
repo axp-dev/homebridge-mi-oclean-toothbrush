@@ -23,7 +23,11 @@ class MiOcleanToothbrush {
         return [];
     }
     getServices() {
-        return [this.informationService, this.batteryService];
+        return [this.informationService, this.batteryService, this.getDiagnosticsService()];
+    }
+    getDiagnosticsService() {
+        const diagnostics = new this.hap.Service.Diagnostics();
+        return diagnostics;
     }
     getInformationService() {
         const accessoryInformation = new this.hap.Service.AccessoryInformation();

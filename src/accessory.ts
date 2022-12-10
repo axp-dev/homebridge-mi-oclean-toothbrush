@@ -10,7 +10,11 @@ import {
 } from 'homebridge'
 import { Scanner, ScannerResultProps } from './scanner'
 import { HAP } from 'homebridge/lib/api'
-import { AccessoryInformation, Battery } from 'hap-nodejs/dist/lib/definitions/ServiceDefinitions'
+import {
+    AccessoryInformation,
+    Battery,
+    Diagnostics
+} from 'hap-nodejs/dist/lib/definitions/ServiceDefinitions'
 
 export class MiOcleanToothbrush implements AccessoryPlugin {
     static accessoryName: string = 'MiOcleanToothbrush'
@@ -46,7 +50,13 @@ export class MiOcleanToothbrush implements AccessoryPlugin {
     }
 
     getServices(): Service[] {
-        return [this.informationService, this.batteryService]
+        return [this.informationService, this.batteryService, this.getDiagnosticsService()]
+    }
+
+    getDiagnosticsService() {
+        const diagnostics = new this.hap.Service.Diagnostics()
+
+        return diagnostics
     }
 
     getInformationService(): AccessoryInformation {
