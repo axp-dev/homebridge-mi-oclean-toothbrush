@@ -34,6 +34,14 @@ export class Scanner {
             characteristicUUID: '2a24',
             executor: (buffer) => buffer.toString()
         })
+
+        noble.on('stateChange', (state) => {
+            if (state === 'poweredOn') {
+                noble.startScanning([], true)
+            } else {
+                noble.stopScanning()
+            }
+        })
     }
 
     addProp(prop: ScannerProp) {
