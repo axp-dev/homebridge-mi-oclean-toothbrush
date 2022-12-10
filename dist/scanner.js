@@ -12,8 +12,8 @@ class Scanner extends events_1.EventEmitter {
         this.uuid = uuid;
         this.log = log;
         this.props = [];
-        this.registerEvents();
-        this.registerProps();
+        // this.registerProps()
+        // this.registerEvents()
     }
     registerProps() {
         this.props.push({

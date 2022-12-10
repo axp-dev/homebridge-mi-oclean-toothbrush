@@ -19,8 +19,8 @@ export class Scanner extends EventEmitter {
 
     constructor(private readonly uuid: string, private readonly log: Logging) {
         super()
-        this.registerEvents()
-        this.registerProps()
+        // this.registerProps()
+        // this.registerEvents()
     }
 
     registerProps() {
