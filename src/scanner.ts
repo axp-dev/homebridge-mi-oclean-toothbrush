@@ -51,7 +51,7 @@ export class Scanner extends EventEmitter {
             this.log.debug('Scanning...')
             noble.startScanning([], false)
         } catch (error) {
-            this.emit('error', error)
+            this.log.error('Scanning', error)
         }
     }
 

@@ -42,7 +42,7 @@ class Scanner extends events_1.EventEmitter {
             noble_1.default.startScanning([], false);
         }
         catch (error) {
-            this.emit('error', error);
+            this.log.error('Scanning', error);
         }
     }
     async onDiscover(peripheral) {
