@@ -28,8 +28,9 @@ class MiOcleanToothbrush {
     getInformationService() {
         const accessoryInformation = new this.hap.Service.AccessoryInformation();
         accessoryInformation.setCharacteristic(this.hap.Characteristic.Name, this.config.name);
-        accessoryInformation.setCharacteristic(this.hap.Characteristic.Manufacturer, 'Oclean');
-        accessoryInformation.setCharacteristic(this.hap.Characteristic.Model, 'unknown');
+        accessoryInformation.setCharacteristic(this.hap.Characteristic.Manufacturer, 'Xiaomi Oclean');
+        accessoryInformation.setCharacteristic(this.hap.Characteristic.Model, 'Toothbrush');
+        accessoryInformation.setCharacteristic(this.hap.Characteristic.SerialNumber, '123456');
         return accessoryInformation;
     }
     getBatteryService() {
@@ -39,7 +40,7 @@ class MiOcleanToothbrush {
             .on("get" /* CharacteristicEventTypes.GET */, (callback) => {
             callback(undefined, this.batteryLevel());
         });
-        batteryService.setCharacteristic(this.hap.Characteristic.ChargingState, this.hap.Characteristic.ChargingState.NOT_CHARGEABLE);
+        batteryService.setCharacteristic(this.hap.Characteristic.ChargingState, this.hap.Characteristic.ChargingState.NOT_CHARGING);
         batteryService
             .getCharacteristic(this.hap.Characteristic.StatusLowBattery)
             .on("get" /* CharacteristicEventTypes.GET */, (callback) => {

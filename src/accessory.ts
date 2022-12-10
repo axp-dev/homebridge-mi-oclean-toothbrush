@@ -53,8 +53,9 @@ export class MiOcleanToothbrush implements AccessoryPlugin {
         const accessoryInformation = new this.hap.Service.AccessoryInformation()
 
         accessoryInformation.setCharacteristic(this.hap.Characteristic.Name, this.config.name)
-        accessoryInformation.setCharacteristic(this.hap.Characteristic.Manufacturer, 'Oclean')
-        accessoryInformation.setCharacteristic(this.hap.Characteristic.Model, 'unknown')
+        accessoryInformation.setCharacteristic(this.hap.Characteristic.Manufacturer, 'Xiaomi Oclean')
+        accessoryInformation.setCharacteristic(this.hap.Characteristic.Model, 'Toothbrush')
+        accessoryInformation.setCharacteristic(this.hap.Characteristic.SerialNumber, '123456')
 
         return accessoryInformation
     }
@@ -70,7 +71,7 @@ export class MiOcleanToothbrush implements AccessoryPlugin {
 
         batteryService.setCharacteristic(
             this.hap.Characteristic.ChargingState,
-            this.hap.Characteristic.ChargingState.NOT_CHARGEABLE
+            this.hap.Characteristic.ChargingState.NOT_CHARGING
         )
 
         batteryService
